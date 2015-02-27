@@ -1,0 +1,362 @@
+:: Main CSS [stylesheet]
+body {
+	margin: 0;
+	/*padding: 0;*/
+	height: 100vh;
+	/*border: 0px none black;*/
+	background-color: black;
+	font-size: 1.1em;
+	color: #bbbbbb;
+	font-family: "PTF55F", serif;
+}
+
+body, nav {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: default;
+}
+
+#sidebar {display:none;}
+
+#footer {display:none;}
+
+#toolbar {display:none;}
+
+#passages {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	left: 10px;
+	bottom: 10px;
+	max-width: 800px;
+	max-height: 600px;
+	/*height: inherit;*/
+	min-height: inherit;
+	/*overflow: auto;*/
+	margin: auto;
+	padding: 0;
+	background-color: #010101;
+	border: none;
+	/*border-radius: 3px;*/
+}
+
+.passage {
+	/*margin: 0;
+	color: inherit;
+	font-family: inherit;*/
+	/*border: inherit;*/
+	font-size: inherit;
+	line-height: inherit;
+	min-height: 100%;
+	/*overflow-y: auto;
+	overflow-x: hidden;*/
+	background-repeat: no-repeat;
+	/*background-attachment: fixed;*/
+	background-position: center center;
+}
+.transition-out {
+	width: 100%;
+}
+
+.content {
+	padding: 20px 50px;
+	/*overflow: hidden;*/
+	tab-size: 4;
+	white-space: pre-wrap;
+}
+
+.tinker {
+	color: #B65856;
+}
+
+.links {
+	position: relative;
+	top: 3em;
+	z-index: 8;
+}
+
+.links a, .passage a {
+	font-weight: normal;
+	text-decoration: none;
+	color: #666666;
+}
+
+.links a:hover, .passage a:hover {
+	font-weight: normal;
+	text-decoration: none;
+	color: #BBBBBB;
+}
+
+.links.restart {
+	text-align: right;
+}
+
+.anykey {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	background-color: red;
+	opacity: 0;
+	z-index: 9;
+}
+
+.anykey:hover {
+	/*opacity: 0.5;*/
+}
+
+.dreamback {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	min-height: 100%;
+	background-image: [img[dreamBG]];
+	background-repeat: no-repeat;
+	background-position: center center;
+	/*opacity: 0.8;*/
+	z-index: 7;
+}
+
+.firsttext, .continue {
+	position: relative;
+	z-index: 8;
+}
+
+.beta {
+	position: fixed;
+	top: 0;
+	left: 0;
+	text-align: left;
+	padding: 0px 5px;
+	z-index: 10;
+	border: 2px solid rgb(70, 70, 70);
+}
+
+
+:: Dream CSS [stylesheet dream]
+.passage {
+	background-image: [img[dreamBG]];
+}
+
+
+
+:: Water CSS [stylesheet water]
+.passage {
+	background-image: [img[waterBG]];
+}
+
+
+:: Stone CSS [stylesheet stone]
+.passage {
+	background-image: [img[stoneBG]];
+}
+
+
+:: Bowel CSS [stylesheet bowel]
+.passage {
+	background-image: [img[bowelBG]];
+}
+
+
+:: Title CSS [stylesheet title]
+.passage {
+	background-image: [img[titleBG]];
+}
+
+
+:: Forest CSS [stylesheet forest]
+.passage {
+	background-image: [img[forestBG]];
+}
+
+
+:: Black CSS [stylesheet black]
+.passage {
+	background-image: [img[blackBG]];
+}
+
+:: Panel CSS [stylesheet panel]
+.passage {
+	background-image: [img[panelBG]];
+}
+
+
+:: Music [annotation]
+Chris Week - Conductor ([[http://chrisweeksmusic.com/album/conductor]])
+Maeror Tri
+Troum
+Geomatic (?)
+David Lynch – The Air Is On Fire
+Demdike Stare (?)
+The Haxan Cloak (?)
+
+
+:: Normal Transition CSS [stylesheet transition t-normal]
+.transition-in {
+	position:absolute;
+	opacity:0;
+}
+.passage {
+	transition: 1s;
+	-webkit-transition: 1s;
+}
+.transition-out {
+	position:absolute;
+	opacity:0;
+}
+
+
+:: Slow Transition CSS [stylesheet transition t-slow]
+.transition-in {
+	position:absolute;
+	opacity:0;
+}
+.passage {
+	transition: 1.5s;
+	-webkit-transition: 1.5s;
+}
+.transition-out {
+	position:absolute;
+	opacity:0;
+}
+
+
+:: Fast Transition CSS [stylesheet transition t-fast]
+.transition-in {
+	position:absolute;
+	opacity:0;
+}
+.passage {
+	transition: 0.5s;
+	-webkit-transition: 0.5s;
+}
+.transition-out {
+	position:absolute;
+	opacity:0;
+}
+
+
+:: Normal CSS [stylesheet normal]
+.endcontinue {
+	-webkit-animation: textshow 1s;
+	animation: textshow 1s;
+}
+
+.links {
+	opacity: 0;
+	-webkit-animation: textshow 1s linear 1s;
+	-webkit-animation-fill-mode: forwards;
+	animation: textshow 1s linear 1s;
+	animation-fill-mode: forwards;
+}
+
+.firsttext {
+	opacity: 0;
+	-webkit-animation: textshow 1s linear 0.5s;
+	-webkit-animation-fill-mode: forwards;
+	animation: textshow 1s linear 0.5s;
+	animation-fill-mode: forwards;
+}
+
+
+:: Slow CSS [stylesheet slow]
+.endcontinue {
+	opacity: 0;
+	-webkit-animation: textshow 1.5s;
+	-webkit-animation-fill-mode: forwards;
+	animation: textshow 1.5s;
+	animation-fill-mode: forwards;
+}
+
+.links {
+	opacity: 0;
+	-webkit-animation: textshow 1.5s linear 1.5s;
+	-webkit-animation-fill-mode: forwards;
+	animation: textshow 1.5s linear 1.5s;
+	animation-fill-mode: forwards;
+}
+
+.firsttext {
+	opacity: 0;
+	-webkit-animation: textshow 1.5s linear 1s;
+	-webkit-animation-fill-mode: forwards;
+	animation: textshow 1.5s linear 1s;
+	animation-fill-mode: forwards;
+}
+
+
+:: Fast CSS [stylesheet fast]
+/*.endcontinue {
+	-webkit-animation: textshow 0.1s;
+	animation: textshow 0.1s;
+}*/
+
+.links {
+	opacity: 0;
+	-webkit-animation: textshow 0.1s linear 0.1s;
+	-webkit-animation-fill-mode: forwards;
+	animation: textshow 0.1s linear 0.1s;
+	animation-fill-mode: forwards;
+}
+
+.restart {
+	opacity: 0;
+	-webkit-animation: textshow 2s linear 0.5s;
+	-webkit-animation-fill-mode: forwards;
+	animation: textshow 2s linear 0.5s;
+	animation-fill-mode: forwards;
+}
+
+.firsttext {
+	opacity: 0;
+	-webkit-animation: textshow 0.1s linear 0.1s;
+	-webkit-animation-fill-mode: forwards;
+	animation: textshow 0.1s linear 0.1s;
+	animation-fill-mode: forwards;
+}
+.endcontinue {
+	opacity: 0;
+	-webkit-animation: textshow 0.1s;
+	-webkit-animation-fill-mode: forwards;
+	animation: textshow 0.1s;
+	animation-fill-mode: forwards;
+}
+
+
+:: DreamSeq CSS  [stylesheet dreamSeq]
+.dreamback {
+	opacity: 0;
+	-webkit-animation: textshow 40s;
+	-webkit-animation-fill-mode: forwards;
+	animation: textshow 40s;
+	animation-fill-mode: forwards;
+}
+
+
+:: Animations CSS [stylesheet]
+@-webkit-keyframes textshow {
+	from {opacity: 0;}
+	to {opacity: 1;}
+}
+
+@keyframes textshow {
+	from {opacity: 0;}
+	to {opacity: 1;}
+}
+
+@-webkit-keyframes textdisappear {
+	from {opacity: 1;}
+	to {opacity: 0;}
+}
+
+@keyframes textdisappear {
+	from {opacity: 1;}
+	to {opacity: 0;}
+}
