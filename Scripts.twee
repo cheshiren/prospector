@@ -75,6 +75,239 @@ m=cssTimeUnit(t)}d=eval(Wikifier.parse(d));if(d+""&&state&&state.init){if(macros
 version.extensions["toggletagMacros"]={major:1,minor:1,revision:0};macros["toggletag"]={handler:function(a,b,c){var p=e(a);var d=document.body;if(p){var t=p.getAttribute("data-tags");var i=t.indexOf(c[0]);if(b!="addtag"&&i>=0){var r=t.replace(c[0],"");p.setAttribute("data-tags",r);d.setAttribute("data-tags",r);}else{if(b!="removetag"&&i<0){var r=t+" "+c[0];p.setAttribute("data-tags",r);d.setAttribute("data-tags",r);}}}function e(f){while(f.parentNode&&!f.classList.contains("passage")){f=f.parentNode;
 }if(f!=document&&f.getAttribute("data-tags")){return f;}return null;}}};macros["addtag"]=macros["toggletag"];macros["removetag"]=macros["toggletag"];
 
+
+:: Leon's Sound [script]
+/*
+(function () {
+	"use strict";
+	version.extensions['soundMacros'] = {
+		major: 1,
+		minor: 1,
+		revision: 2
+	};
+	var p = macros['playsound'] = {
+		soundtracks: {},
+		handler: function (a, b, c, d) {
+			var loop = function (m) {
+					if (m.loop == undefined) {
+						m.loopfn = function () {
+							this.play();
+						};
+						m.addEventListener('ended', m.loopfn, 0);
+					} else m.loop = true;
+					m.play();
+					};
+			var s = eval(d.fullArgs());
+			alert (s);
+			if (s) {
+				s = s.toString();
+				var m = this.soundtracks[s.slice(0, s.lastIndexOf("."))];
+				if (m) {
+					if (b == "playsound") {
+						m.play();
+					} else if (b == "loopsound") {
+						loop(m);
+					} else if (b == "pausesound") {
+						m.pause();
+					} else if (b == "unloopsound") {
+						if (m.loop != undefined) {
+							m.loop = false;
+						} else if (m.loopfn) {
+							m.removeEventListener('ended', m.loopfn);
+							delete m.loopfn;
+						}
+					} else if (b == "stopsound") {
+						m.pause();
+						m.currentTime = 0;
+					} else if (b == "fadeoutsound" || b == "fadeinsound") {
+						if (m.interval) clearInterval(m.interval);
+						if (b == "fadeinsound") {
+							if (m.currentTime>0) return;
+							m.volume = 0;
+							loop(m);
+						} else {
+							if (!m.currentTime) return;
+							m.play();
+						}
+						var v = m.volume;
+						m.interval = setInterval(function () {
+							v = Math.min(1, Math.max(0, v + 0.005 * (b == "fadeinsound" ? 1 : -1)));
+							m.volume = Math.easeInOut(v);
+							if (v == 0 || v == 1) clearInterval(m.interval);
+							if (v == 0) {
+								m.pause();
+								m.currentTime = 0;
+								m.volume = 1;
+							}
+						}, 10);
+					}
+				}
+			}
+		}
+	}
+	macros['fadeinsound'] = p;
+	macros['fadeoutsound'] = p;
+	macros['unloopsound'] = p;
+	macros['loopsound'] = p;
+	macros['pausesound'] = p;
+	macros['stopsound'] = p;
+	macros['stopallsound'] = {
+		handler: function () {
+			var s = macros.playsound.soundtracks;
+			for (var j in s) {
+		if (s.hasOwnProperty(j)) {
+					s[j].pause();
+					if (s[j].currentTime) {
+				s[j].currentTime = 0;
+			}
+		}
+			}
+		}
+	}
+	var div = document.getElementById("storeArea").firstChild;
+	var fe = ["ogg", "mp3", "wav", "webm"];
+	while (div) {
+		var b = String.fromCharCode(92);
+		var q = '"';
+		var re = "['" + q + "]([^" + q + "']*?)" + b + ".(ogg|mp3|wav|webm)['" + q + "]";
+		k(new RegExp(re, "gi"));
+		div = div.nextSibling;
+	}
+
+	function k(c, e) {
+		do {
+			var d = c.exec(div.innerHTML);
+			if (d) {
+				var a = new Audio();
+				if (a.canPlayType) {
+					for (var i = -1; i < fe.length; i += 1) {
+						if (i >= 0) d[2] = fe[i];
+						if (a.canPlayType("audio/" + d[2])) break;
+					}
+					if (i < fe.length) {
+						a.setAttribute("src", d[1] + "." + d[2]);
+						a.interval = null;
+						macros.playsound.soundtracks[d[1]] = a;
+					} else console.log("Browser can't play '" + d[1] + "'");
+				}
+			}
+		} while (d);
+	}
+}());
+*/
+
+:: Cora's Sound [script]
+//requires jQuery
+var div = document.getElementById("storeArea").firstChild;
+	var fe = ["ogg", "mp3", "wav", "webm"];
+	while (div) {
+		var b = String.fromCharCode(92);
+		var q = '"';
+		var re = "['" + q + "]([^" + q + "']*?)" + b + ".(ogg|mp3|wav|webm)['" + q + "]";
+		k(new RegExp(re, "gi"));
+		div = div.nextSibling;
+	}
+
+function k(c, e) {
+	do {
+		var d = c.exec(div.innerHTML);
+		if (d) {
+			var a = new Audio();
+			if (a.canPlayType) {
+				for (var i = -1; i < fe.length; i += 1) {
+					if (i >= 0) d[2] = fe[i];
+					if (a.canPlayType("audio/" + d[2])) break;
+				}
+				if (i < fe.length) {
+					a.setAttribute("src", d[1] + "." + d[2]);
+					a.setAttribute('id', d[1] + "." + d[2]);
+					a.interval = null;
+					$("#storeArea").append(a);
+				} else console.log("Browser can't play '" + d[1] + "'");
+			}
+		}
+	} while (d);
+}
+
+macros['playsound'] = macros['pausesound'] = macros['stopsound'] = macros['fadeinsound'] = macros['fadeoutsound'] = macros['crossfadesound'] = macros['loopsound'] = macros['unloopsound'] = macros['delayedplaysound'] = macros['delayedcrossfadesound'] = macros['delayedloopsound'] = {
+	handler: function(place, macroName, params, parser) {
+		var audio_1;
+		var audio_2;
+		var fade;
+		if (macroName == 'playsound') {
+			audio_1 = document.getElementById(params[0]);
+			$(".playing").removeClass("playing");
+			audio_1.setAttribute("class", "playing");
+			audio_1.play();
+			audio_1.delayedRemoveClass = function (){
+				audio_1.removeAttribute("class");
+				audio_1.removeEventListener('ended', audio_1.delayedRemoveClass);
+			}
+			audio_1.addEventListener('ended', audio_1.delayedRemoveClass);
+		}
+		if (macroName == 'pausesound') {
+			audio_1 = document.getElementById(params[0]);
+			$(".playing").removeClass("playing");
+			audio_1.pause();
+		}
+		if (macroName == 'stopsound') {
+			audio_1 = document.getElementById(params[0]);
+			$(".playing").removeClass("playing");
+			audio_1.pause();
+			audio_1.loop = false;
+			audio_1.currentTime = 0;
+		}
+		if (macroName == 'loopsound') {
+			audio_1 = document.getElementById(params[0]);
+			$(".playing").removeClass("playing");
+			audio_1.setAttribute("class", "playing");
+			audio_1.play();
+			audio_1.loop = true;
+		}
+		if (macroName == 'unloopsound') {
+			audio_1 = document.getElementById(params[0]);
+			audio_1.loop = false;
+			audio_1.delayedRemoveClass = function (){
+				this.removeAttribute("class");
+				this.removeEventListener('ended', this.delayedRemoveClass);
+			}
+			audio_1.addEventListener('ended', audio_1.delayedRemoveClass);
+		}
+		if (macroName == 'delayedplaysound') {
+			audio_1 = document.getElementsByClassName("playing")[0];
+			audio_1.loop = false;
+			//alert (audio_1.getAttribute('id'));
+			audio_2 = document.getElementById(params[0]);
+			audio_1.delayedPlay = function (){
+				audio_1.removeAttribute("class");
+				audio_2.setAttribute("class", "playing");
+				audio_2.play();		
+				audio_1.removeEventListener('ended', audio_1.delayedPlay);
+			}
+			audio_1.addEventListener('ended', audio_1.delayedPlay);
+			audio_2.delayedRemoveClass = function (){
+				audio_2.removeAttribute("class");
+				audio_2.removeEventListener('ended', audio_2.delayedRemoveClass);
+			}
+			audio_2.addEventListener('ended', audio_2.delayedRemoveClass);
+		}
+		if (macroName == 'delayedloopsound') {
+			audio_1 = document.getElementsByClassName("playing")[0];
+			audio_1.loop = false;
+			audio_2 = document.getElementById(params[0]);
+			audio_1.delayedPlay = function (){
+				audio_1.removeAttribute("class");
+				audio_2.setAttribute("class", "playing");
+				audio_2.play();
+				audio_2.loop = true;
+				audio_1.removeEventListener('ended', audio_1.delayedPlay);
+			}
+			audio_1.addEventListener('ended', audio_1.delayedPlay);
+		}
+	}
+};
+
+
 ::9999 Macro while.twee About [Twine.private]
 
 VERSION: 20140827
@@ -98,55 +331,56 @@ Basic idea taken from the <<if>> macro, but works slightly differently.
 ::9999 Macro while.twee [script]
 try { 
 
-version.extensions.whileMacros = {
-    major: 1, minor: 0, revision: 0
-};
+	version.extensions.whileMacros = {
+			major: 1, minor: 0, revision: 0
+	};
 
-macros['while'] = { 
-  handler: function(place, macroName, params, parser) {
-    var srcOffset = parser.source.indexOf(">>", parser.matchStart) + 2,
-      src = parser.source.slice(srcOffset),
-      endPos = -1,
-      condition = parser.fullArgs().trim(),
-      body = "",
-      nestlevel = 0,
-      i = 0;
-        
-    for (; i < src.length; i++) {
-      if (src.substr(i, 8) == "<<while ") {
-        nestlevel++;
-      }
-      if (src.substr(i, 12) == "<<endwhile>>") {
-        nestlevel--;
-        if (nestlevel < 0) {
-          endPos = srcOffset + i + 12;
-          break;
-        }
-      }
-      body += src.charAt(i);
-    }
-    body = body.trim();
+	macros['while'] = { 
+		handler: function(place, macroName, params, parser) {
+			var srcOffset = parser.source.indexOf(">>", parser.matchStart) + 2,
+				src = parser.source.slice(srcOffset),
+				endPos = -1,
+				condition = parser.fullArgs().trim(),
+				body = "",
+				nestlevel = 0,
+				i = 0;
+					
+			for (; i < src.length; i++) {
+				if (src.substr(i, 8) == "<<while ") {
+					nestlevel++;
+				}
+				if (src.substr(i, 12) == "<<endwhile>>") {
+					nestlevel--;
+					if (nestlevel < 0) {
+						endPos = srcOffset + i + 12;
+						break;
+					}
+				}
+				body += src.charAt(i);
+			}
+			body = body.trim();
 
-    if (endPos != -1) {
-      parser.nextMatch = endPos;
-      try {
-        while (internalEval(condition)) {
-          new Wikifier(place, body);
-        }
-      } catch (e) {
-        throwError(place, "<<while>> bad condition: " + condition, parser.fullMatch());
-      }
-    } else {
-      throwError(place, "I can't find a matching <<endwhile>>", parser.fullMatch());
-    }
-  },
-  init: function() { }
-};
+			if (endPos != -1) {
+				parser.nextMatch = endPos;
+				try {
+					while (internalEval(condition)) {
+						new Wikifier(place, body);
+					}
+				} catch (e) {
+					throwError(place, "<<while>> bad condition: " + condition, parser.fullMatch());
+				}
+			} else {
+				throwError(place, "I can't find a matching <<endwhile>>", parser.fullMatch());
+			}
+		},
+		init: function() { }
+	};
 
-macros["endwhile"] = {
-  handler: function () {}
-};
+	macros["endwhile"] = {
+		handler: function () {}
+	};
 
-} catch(e) { 
-  throwError(place,"Macro while Error: "+e.message); 
+}
+catch(e) { 
+	throwError(place,"Macro while Error: "+e.message); 
 }
