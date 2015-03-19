@@ -199,19 +199,19 @@ version.extensions["toggletagMacros"]={major:1,minor:1,revision:0};macros["toggl
 :: Cora's Sound [script]
 //requires jQuery
 var div = document.getElementById("storeArea").firstChild;
-	var fe = ["ogg", "mp3", "wav", "webm"];
-	while (div) {
-		var b = String.fromCharCode(92);
-		var q = '"';
-		var re = "['" + q + "]([^" + q + "']*?)" + b + ".(ogg|mp3|wav|webm)['" + q + "]";
-		k(new RegExp(re, "gi"));
-		div = div.nextSibling;
-	}
+var fe = ["ogg", "mp3", "wav", "webm"];
+while (div) {
+	var b = String.fromCharCode(92);
+	var q = '"';
+	var re = "['" + q + "]([^" + q + "']*?)" + b + ".(ogg|mp3|wav|webm)['" + q + "]";
+	k(new RegExp(re, "gi"));
+	div = div.nextSibling;
+}
 
 function k(c, e) {
 	do {
 		var d = c.exec(div.innerHTML);
-		if (d) {
+		if (d && document.getElementById(d[1] + "." + d[2]) == undefined) {
 			var a = new Audio();
 			if (a.canPlayType) {
 				for (var i = -1; i < fe.length; i += 1) {
@@ -226,84 +226,89 @@ function k(c, e) {
 				} else console.log("Browser can't play '" + d[1] + "'");
 			}
 		}
-	} while (d);
+	}
+	while (d);
 }
 
-macros['playsound'] = macros['pausesound'] = macros['stopsound'] = macros['fadeinsound'] = macros['fadeoutsound'] = macros['crossfadesound'] = macros['loopsound'] = macros['unloopsound'] = macros['delayedplaysound'] = macros['delayedcrossfadesound'] = macros['delayedloopsound'] = {
+var audioWaiting = [];
+
+macros['playsound'] = macros['pausesound'] = macros['stopsound'] = macros['loopsound'] = macros['unloopsound'] = macros['delayedplaysound'] = macros['delayedloopsound'] = {
 	handler: function(place, macroName, params, parser) {
-		var audio_1;
-		var audio_2;
-		var fade;
-		if (macroName == 'playsound') {
-			audio_1 = document.getElementById(params[0]);
-			$(".playing").removeClass("playing");
-			audio_1.setAttribute("class", "playing");
-			audio_1.play();
-			audio_1.delayedRemoveClass = function (){
-				audio_1.removeAttribute("class");
-				audio_1.removeEventListener('ended', audio_1.delayedRemoveClass);
-			}
-			audio_1.addEventListener('ended', audio_1.delayedRemoveClass);
-		}
-		if (macroName == 'pausesound') {
-			audio_1 = document.getElementById(params[0]);
-			$(".playing").removeClass("playing");
-			audio_1.pause();
-		}
-		if (macroName == 'stopsound') {
-			audio_1 = document.getElementById(params[0]);
-			$(".playing").removeClass("playing");
-			audio_1.pause();
-			audio_1.loop = false;
-			audio_1.currentTime = 0;
-		}
-		if (macroName == 'loopsound') {
-			audio_1 = document.getElementById(params[0]);
-			$(".playing").removeClass("playing");
-			audio_1.setAttribute("class", "playing");
-			audio_1.play();
-			audio_1.loop = true;
-		}
-		if (macroName == 'unloopsound') {
-			audio_1 = document.getElementById(params[0]);
-			audio_1.loop = false;
-			audio_1.delayedRemoveClass = function (){
+		var audioScope = document.getElementById(eval(parser.fullArgs()));
+		var audioPlaying = document.getElementsByClassName("playing")[0];
+		//if (macroName == 'fadeinsound' || macroName == 'fadeoutsound' || macroName == 'crossfadesound' || macroName == 'delayedcrossfadesound') var fade = params[1];
+		var playsound = function (m){
+			m.setAttribute("class", "playing");
+			m.play();
+			m.delayedRemoveClass = function (){
 				this.removeAttribute("class");
+				this.currentTime = 0;
+				if (audioWaiting[0]){
+					if (audioWaiting[0].looping) {
+						audioWaiting[0].loop = true;
+						audioWaiting[0].looping = false;
+					}
+					playsound(audioWaiting[0]);
+					audioWaiting.shift();
+				}
 				this.removeEventListener('ended', this.delayedRemoveClass);
 			}
-			audio_1.addEventListener('ended', audio_1.delayedRemoveClass);
+			m.addEventListener('ended', m.delayedRemoveClass);
+		}
+		var pausesound = function (m){
+			m.removeAttribute("class");
+			m.loop = false;
+			m.pause();
+		}
+		var delayedplaysound = function (m, n){
+			n.loop = false;
+			audioWaiting[audioWaiting.length] = m;
+		}
+		if (macroName == 'playsound') {
+			playsound (audioScope);
+		}
+		if (macroName == 'pausesound') {
+			pausesound (audioScope);
+		}
+		if (macroName == 'stopsound') {
+			pausesound (audioScope);
+			audioScope.currentTime = 0;
+		}
+		if (macroName == 'loopsound') {
+			playsound(audioScope);
+			audioScope.loop = true;
+		}
+		if (macroName == 'unloopsound') {
+			audioScope.loop = false;
 		}
 		if (macroName == 'delayedplaysound') {
-			audio_1 = document.getElementsByClassName("playing")[0];
-			audio_1.loop = false;
-			//alert (audio_1.getAttribute('id'));
-			audio_2 = document.getElementById(params[0]);
-			audio_1.delayedPlay = function (){
-				audio_1.removeAttribute("class");
-				audio_2.setAttribute("class", "playing");
-				audio_2.play();		
-				audio_1.removeEventListener('ended', audio_1.delayedPlay);
-			}
-			audio_1.addEventListener('ended', audio_1.delayedPlay);
-			audio_2.delayedRemoveClass = function (){
-				audio_2.removeAttribute("class");
-				audio_2.removeEventListener('ended', audio_2.delayedRemoveClass);
-			}
-			audio_2.addEventListener('ended', audio_2.delayedRemoveClass);
+			delayedplaysound (audioScope, audioPlaying);
 		}
 		if (macroName == 'delayedloopsound') {
-			audio_1 = document.getElementsByClassName("playing")[0];
-			audio_1.loop = false;
-			audio_2 = document.getElementById(params[0]);
-			audio_1.delayedPlay = function (){
-				audio_1.removeAttribute("class");
-				audio_2.setAttribute("class", "playing");
-				audio_2.play();
-				audio_2.loop = true;
-				audio_1.removeEventListener('ended', audio_1.delayedPlay);
-			}
-			audio_1.addEventListener('ended', audio_1.delayedPlay);
+			delayedplaysound (audioScope, audioPlaying);
+			audioScope.looping = true;
 		}
+/*		if (macroName == "fadeoutsound" || macroName == "fadeinsound") {
+			if (m.interval) clearInterval(m.interval);
+			if (macroName == "fadeinsound") {
+				if (m.currentTime>0) return;
+				m.volume = 0;
+				loop(m);
+			} else {
+				if (!m.currentTime) return;
+				m.play();
+			}
+			var v = m.volume;
+			m.interval = setInterval(function () {
+				v = Math.min(1, Math.max(0, v + 0.005 * (macroName == "fadeinsound" ? 1 : -1)));
+				m.volume = Math.easeInOut(v);
+				if (v == 0 || v == 1) clearInterval(m.interval);
+				if (v == 0) {
+					m.pause();
+					m.currentTime = 0;
+					m.volume = 1;
+				}
+			}, 10);*/
 	}
 };
 
