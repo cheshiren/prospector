@@ -29,7 +29,7 @@ CSSImports.twee
 CSS.twee
 
 
-:: Music [annotation]
+:: Music1 [annotation]
 Chris Week - Conductor ([[http://chrisweeksmusic.com/album/conductor]])
 Maeror Tri
 Troum
@@ -37,6 +37,17 @@ Geomatic (?)
 David Lynch – The Air Is On Fire
 Demdike Stare (?)
 The Haxan Cloak (?)
+
+
+:: Music [nobr]
+<<set $musBegin2Ferry = "sound/green0.wav">>
+<<set $musFerry = "sound/green1.wav">>
+<<set $musFerry2Beach = "sound/green1-2.wav">>
+<<set $musBeach = "sound/green2.wav">>
+<<set $musBeach2Stairs = "sound/green2-3.wav">>
+<<set $musStairs = "sound/green3.wav">>
+<<set $musStairs2End = "sound/green4.wav">>
+
 
 
 
@@ -48,15 +59,12 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 
 
 :: Start [nobr]
-
+<<Music>>
 <center style="padding-top: 15vh;">Отображать меню бета-режима?
 <br>(не рекомендуется при первой игре)
 <br>[[Нет|Post-Start][$Beta = 0]] | [[Да|Post-Start][$Beta = 1]]
 </center>
-<<loopsound "red_perehod.wav">>
-"1.mp3"
-"2.mp3"
-"df.ogg"
+
 
 
 :: Post-Start [nobr]
@@ -68,7 +76,8 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 
 :: Begin [nobr dream slow]
 /%%/
-<<delayedloopsound "green1-2.wav">>
+<<playsound $musBegin2Ferry>>
+<<delayedloopsound $musFerry>>
 <<if $Beta>>
 <div class="beta">
 [[Титульный|Title]]<br>
@@ -167,6 +176,9 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 [[— Осмотреться|ExamFerry]]
 </p>
 <<else>>
+<<unloopsound $musFerry>>
+<<delayedplaysound $musFerry2Beach>>
+<<delayedloopsound $musBeach>>
 @@.firsttext;	Ржавая калитка отворяется с громким скрипом, несколько мокрых металлических ступенек ведут прямо в холодную, тихо плещущуюся о борт черноту. Осторожный спуск на белеющую под водой дорожку, и она немного глубже, чем казалось с парома.@@
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
@@ -203,6 +215,9 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 <br>
 @@.tinsmith;	— ...Когда-то таких башен было много. Все очень высокие. Скульпторы их строили. Жили там, занимались своими скульпторскими делами. Наверх лазали, — Жестянщик зашёлся кашлем и долго не мог остановиться. Прошло несколько минут прежде, чем он смог продолжить. — А потом что-то произошло там, и Башни начали рушиться. Одна за другой. Их обломки разлетались по всей округе и рушили другие Башни, пока не осталась одна, Последняя, окружённая руинами...@@
 <<continue>><div class="anykey"></div><<endcontinue>>
+<<unloopsound $musBeach>>
+<<delayedplaysound $musBeach2Stairs>>
+<<delayedloopsound $musStairs>>
 <br>
 <br>
 	Дорожка заканчивается перед широкой каменной лестницей, поднимающейся из воды. Её растрескавшиеся тёмно-серые ступени влажно блестят в свете фонаря. Справа и слева темнеют очертания берега.
@@ -237,6 +252,8 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 /%%/
 @@.firsttext;	Зарево становится всё ярче. Озон вновь чувствуется в воздухе. И появляется шум. Сначала тихий и неразборчивый, но с каждой ступенью всё более громкий. Скрипы и скрежеты, гул ветра и отдалённый, полный злой безысходности, вой.@@
 <<continue>><div class="anykey"></div><<endcontinue>>
+<<unloopsound $musStairs>>
+<<delayedplaysound $musStairs2End>>
 <br>
 <br>
 @@.tinsmith;	— ...А что творится в самой Башне вообще никому неизвестно. Поговаривали, что внутри иногда мелькают огни, но кому захочется подходить, выяснять? Ржавый Лес не пропустит...@@
