@@ -40,14 +40,19 @@ The Haxan Cloak (?)
 
 
 :: Music [nobr]
-<<set $musBegin2Ferry = "sound/green0.wav">>
-<<set $musFerry = "sound/green1.wav">>
-<<set $musFerry2Beach = "sound/green1-2.wav">>
-<<set $musBeach = "sound/green2.wav">>
-<<set $musBeach2Stairs = "sound/green2-3.wav">>
-<<set $musStairs = "sound/green3.wav">>
-<<set $musStairs2End = "sound/green4.wav">>
+<<fadetime 0.5s>>
+<<set $musBegin2Ferry = "sound/green0.mp3">>
+<<set $musFerry = "sound/green1.mp3">>
+<<set $musFerry2Beach = "sound/green1-2.mp3">>
+<<set $musBeach = "sound/green2.mp3">>
+<<set $musBeach2Stairs = "sound/green2-3.mp3">>
+<<set $musStairs = "sound/green3.mp3">>
+<<set $musStairs2End = "sound/green4.mp3">>
 
+<<set $musLoop = "sound/green1(loop).mp3"+"sound/green2(loop).mp3"+"sound/green3(loop).mp3">>
+
+<<set $musTest = "sound/red oglyadivaetsya.mp3">>
+<<set $musTest1 = "sound/last 1.mp3">>
 
 
 
@@ -75,16 +80,18 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 
 
 :: Begin [nobr dream slow]
-/%%/
-<<playsound $musBegin2Ferry>>
-<<delayedloopsound $musFerry>>
+<<playbgm $musBegin2Ferry>>
+<<afterloopbgm $musFerry>>
+/%<<loopbgm $musTest>>
+<<afterloopbgm $musTest1>>%/
 <<if $Beta>>
 <div class="beta">
 [[Титульный|Title]]<br>
 [[На стене|ClimbWall]]<br>
 [[Сон|Dream]]<br>
 [[Пробуждение|JumpOnBlack]]<br>
-[[Включение джаммера|TurnJammerOn]]
+[[Включение джаммера|TurnJammerOn]]<br>
+<span id="demo"></span>
 </div>
 <<endif>>
 @@.firsttext;	...И снова низкое чёрное небо несётся над бурой Пустошью. Остовы разрушенных зданий и ржавая пыль на руках.@@
@@ -176,9 +183,8 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 [[— Осмотреться|ExamFerry]]
 </p>
 <<else>>
-<<unloopsound $musFerry>>
-<<delayedplaysound $musFerry2Beach>>
-<<delayedloopsound $musBeach>>
+<<afterplaybgm $musFerry2Beach>>
+<<afterloopbgm $musBeach>>
 @@.firsttext;	Ржавая калитка отворяется с громким скрипом, несколько мокрых металлических ступенек ведут прямо в холодную, тихо плещущуюся о борт черноту. Осторожный спуск на белеющую под водой дорожку, и она немного глубже, чем казалось с парома.@@
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
@@ -215,9 +221,8 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 <br>
 @@.tinsmith;	— ...Когда-то таких башен было много. Все очень высокие. Скульпторы их строили. Жили там, занимались своими скульпторскими делами. Наверх лазали, — Жестянщик зашёлся кашлем и долго не мог остановиться. Прошло несколько минут прежде, чем он смог продолжить. — А потом что-то произошло там, и Башни начали рушиться. Одна за другой. Их обломки разлетались по всей округе и рушили другие Башни, пока не осталась одна, Последняя, окружённая руинами...@@
 <<continue>><div class="anykey"></div><<endcontinue>>
-<<unloopsound $musBeach>>
-<<delayedplaysound $musBeach2Stairs>>
-<<delayedloopsound $musStairs>>
+<<afterplaybgm $musBeach2Stairs>>
+<<afterloopbgm $musStairs>>
 <br>
 <br>
 	Дорожка заканчивается перед широкой каменной лестницей, поднимающейся из воды. Её растрескавшиеся тёмно-серые ступени влажно блестят в свете фонаря. Справа и слева темнеют очертания берега.
@@ -252,8 +257,7 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 /%%/
 @@.firsttext;	Зарево становится всё ярче. Озон вновь чувствуется в воздухе. И появляется шум. Сначала тихий и неразборчивый, но с каждой ступенью всё более громкий. Скрипы и скрежеты, гул ветра и отдалённый, полный злой безысходности, вой.@@
 <<continue>><div class="anykey"></div><<endcontinue>>
-<<unloopsound $musStairs>>
-<<delayedplaysound $musStairs2End>>
+<<afterplaybgm $musStairs2End>>
 <br>
 <br>
 @@.tinsmith;	— ...А что творится в самой Башне вообще никому неизвестно. Поговаривали, что внутри иногда мелькают огни, но кому захочется подходить, выяснять? Ржавый Лес не пропустит...@@

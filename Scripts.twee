@@ -61,14 +61,45 @@ macros.endhoverrevise=nullobj}());
 
 
 :: Leon's Goto [script]
-version.extensions.timedgotoMacro={major:1,minor:2,revision:0};
-macros["goto"]=macros.timedgoto={timer:null,handler:function(a,b,c,d){function cssTimeUnit(s){if(typeof s=="string"){if(s.slice(-2).toLowerCase()=="ms"){return +(s.slice(0,-2))||0
-}else{if(s.slice(-1).toLowerCase()=="s"){return +(s.slice(0,-1))*1000||0
-}}}throwError(a,s+" isn't a CSS time unit");return 0}var t,d,m,s;
-t=c[c.length-1];d=d.fullArgs();m=0;if(b!="goto"){d=d.slice(0,d.lastIndexOf(t));
-m=cssTimeUnit(t)}d=eval(Wikifier.parse(d));if(d+""&&state&&state.init){if(macros["goto"].timer){clearTimeout(macros["goto"].timer)
-}s=state.history[0].passage.title;macros["goto"].timer=setTimeout(function(){if(state.history[0].passage.title==s){state.display(d,a)
-}},m)}}};
+version.extensions.timedgotoMacro={
+	major:1,minor:2,revision:0};
+macros["goto"]=macros.timedgoto={
+	timer:null,handler:function(a,b,c,d){
+		function cssTimeUnit(s){
+			if(typeof s=="string"){
+				if(s.slice(-2).toLowerCase()=="ms"){
+					return +(s.slice(0,-2))||0
+				}else{
+					if(s.slice(-1).toLowerCase()=="s"){
+						return +(s.slice(0,-1))*1000||0
+					}
+				}
+			}
+			throwError(a,s+" isn't a CSS time unit");
+			return 0;
+		}
+		var t,d,m,s;
+		t=c[c.length-1];
+		d=d.fullArgs();
+		m=0;
+		if(b!="goto"){
+			d=d.slice(0,d.lastIndexOf(t));
+			m=cssTimeUnit(t)
+		}
+		d=eval(Wikifier.parse(d));
+		if(d+""&&state&&state.init){
+			if(macros["goto"].timer){
+				clearTimeout(macros["goto"].timer)
+			}
+			s=state.history[0].passage.title;
+			macros["goto"].timer=setTimeout(function(){
+				if(state.history[0].passage.title==s){
+					state.display(d,a)
+				}
+			},m)
+		}
+	}
+};
 
 
 :: Leon's Tag [script]
@@ -196,7 +227,7 @@ version.extensions["toggletagMacros"]={major:1,minor:1,revision:0};macros["toggl
 }());
 */
 
-:: Cora's Sound [script]
+:: Own Sound [script]
 //requires jQuery
 var div = document.getElementById("storeArea").firstChild;
 var fe = ["ogg", "mp3", "wav", "webm"];
@@ -231,84 +262,141 @@ function k(c, e) {
 }
 
 var audioWaiting = [];
+var fade = 0;// работает от 0.2 сек.
 
-macros['playsound'] = macros['pausesound'] = macros['stopsound'] = macros['loopsound'] = macros['unloopsound'] = macros['delayedplaysound'] = macros['delayedloopsound'] = {
+macros['fadetime'] = {
+	handler: function(place, macroName, params, parser) {
+		function cssTimeUnit(s){
+			if(typeof s=="string"){
+				if(s.slice(-2).toLowerCase()=="ms"){
+					return +(s.slice(0,-2))||0
+				}else{
+					if(s.slice(-1).toLowerCase()=="s"){
+						return +(s.slice(0,-1))*1000||0
+					}
+				}
+			}
+			throwError(place,s+" isn't a CSS time unit");
+			return 0;
+		}
+		if (params[0]) fade = cssTimeUnit(params[0]);
+	}
+}
+
+macros['playbgm'] = macros['pausebgm'] = macros['stopbgm'] = macros['loopbgm'] = macros['unloopbgm'] = macros['afterplaybgm'] = macros['afterloopbgm'] = {
 	handler: function(place, macroName, params, parser) {
 		var audioScope = document.getElementById(eval(parser.fullArgs()));
 		var audioPlaying = document.getElementsByClassName("playing")[0];
-		//if (macroName == 'fadeinsound' || macroName == 'fadeoutsound' || macroName == 'crossfadesound' || macroName == 'delayedcrossfadesound') var fade = params[1];
-		var playsound = function (m){
-			m.setAttribute("class", "playing");
-			m.play();
-			m.delayedRemoveClass = function (){
-				this.removeAttribute("class");
-				this.currentTime = 0;
-				if (audioWaiting[0]){
-					if (audioWaiting[0].looping) {
-						audioWaiting[0].loop = true;
-						audioWaiting[0].looping = false;
-					}
-					playsound(audioWaiting[0]);
-					audioWaiting.shift();
-				}
-				this.removeEventListener('ended', this.delayedRemoveClass);
+		var playbgm = function (bgm) {
+			if (fade > 0) {
+				fading(bgm, 1);
+			} else {
+				this.volume = 1;
 			}
-			m.addEventListener('ended', m.delayedRemoveClass);
+			bgm.play();
+			if (!bgm.hasAttribute("class")) bgm.setAttribute("class", "playing");
+			bgm.ontimeupdate = function() {
+				if (fade > 0) {
+					var e = (this.duration-this.currentTime)*1000-fade*2;
+					if (e <= 0) {
+						fading(this, -1);
+						if (audioWaiting[0]){
+							this.looped = false;
+							playbgm(audioWaiting[0]);
+							audioWaiting.shift();
+						} else if (this.looped){
+							if (this.id.slice(-10,-4) != "(loop)") {
+								var cp = document.getElementById(this.id.slice(0,-4)+"(loop)"+this.id.slice(-4));
+								cp.looped = true;
+								this.looped = false;
+								playbgm(cp);
+							} else {
+								var orig = document.getElementById(this.id.slice(0,-10)+this.id.slice(-4));
+								orig.looped = true;
+								this.looped = false;
+								playbgm(orig);
+							}
+						}
+						delete this.ontimeupdate;
+					}
+				}
+			}
+			bgm.onended = function() {
+				this.removeAttribute("class");
+			}
 		}
-		var pausesound = function (m){
+		var pausebgm = function (m){
 			m.removeAttribute("class");
 			m.loop = false;
 			m.pause();
 		}
-		var delayedplaysound = function (m, n){
-			n.loop = false;
-			audioWaiting[audioWaiting.length] = m;
+		var loopbgm = function (m){
+			m.looped = true;
+			playbgm(m);
 		}
-		if (macroName == 'playsound') {
-			playsound (audioScope);
+		var stopbgm = function (m){
+			pausebgm(m);
+			m.removeEventListener('ended', m.afterRemoveClass);
+			m.currentTime = 0;
 		}
-		if (macroName == 'pausesound') {
-			pausesound (audioScope);
-		}
-		if (macroName == 'stopsound') {
-			pausesound (audioScope);
-			audioScope.currentTime = 0;
-		}
-		if (macroName == 'loopsound') {
-			playsound(audioScope);
-			audioScope.loop = true;
-		}
-		if (macroName == 'unloopsound') {
-			audioScope.loop = false;
-		}
-		if (macroName == 'delayedplaysound') {
-			delayedplaysound (audioScope, audioPlaying);
-		}
-		if (macroName == 'delayedloopsound') {
-			delayedplaysound (audioScope, audioPlaying);
-			audioScope.looping = true;
-		}
-/*		if (macroName == "fadeoutsound" || macroName == "fadeinsound") {
+		var fading = function (m, d){
 			if (m.interval) clearInterval(m.interval);
-			if (macroName == "fadeinsound") {
-				if (m.currentTime>0) return;
+			if (d == 1) {//fadein
 				m.volume = 0;
-				loop(m);
-			} else {
+			} else if (d == -1) {//fadeout
 				if (!m.currentTime) return;
-				m.play();
 			}
 			var v = m.volume;
 			m.interval = setInterval(function () {
-				v = Math.min(1, Math.max(0, v + 0.005 * (macroName == "fadeinsound" ? 1 : -1)));
-				m.volume = Math.easeInOut(v);
+				v = Math.min(1, Math.max(0, v + 100/fade * d));
+				m.volume = v;
 				if (v == 0 || v == 1) clearInterval(m.interval);
-				if (v == 0) {
-					m.pause();
-					m.currentTime = 0;
-					m.volume = 1;
+			}, 100);
+		}
+		var aftercrossfadebgm = function (){
+			var m = audioPlaying;
+			m.ontimeupdate = function(){
+				var e = (m.duration-m.currentTime)*1000-fade*2;
+				if (e <= 0) {
+					fading(m,-1);
+					if (audioWaiting[0]){
+						if (audioWaiting[0].looping) {
+							audioWaiting[0].loop = true;
+							audioWaiting[0].looping = false;
+						}
+						fading(audioWaiting[0],1);
+						audioWaiting.shift();
+					}
 				}
-			}, 10);*/
+			}
+		}
+
+		if (macroName == 'playbgm') {
+			playbgm (audioScope);
+		}
+		if (macroName == 'pausebgm') {
+			pausebgm (audioScope);
+		}
+		if (macroName == 'stopbgm') {
+			pausebgm (audioScope);
+			audioScope.currentTime = 0;
+		}
+		if (macroName == 'loopbgm') {
+			loopbgm(audioScope);
+		}
+		if (macroName == 'unloopbgm') {
+			audioScope.looped = false;
+		}
+		if (macroName == 'afterplaybgm') {
+			audioWaiting[audioWaiting.length] = audioScope;
+		}
+		if (macroName == 'afterloopbgm') {
+			audioWaiting[audioWaiting.length] = audioScope;
+			audioScope.looped = true;
+		}
+		if (macroName == 'pausebgm') {
+			pausebgm (audioScope);
+		}
 	}
 };
 
