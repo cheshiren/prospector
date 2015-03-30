@@ -254,6 +254,11 @@ function k(c, e) {
 					a.setAttribute('id', d[1] + "." + d[2]);
 					a.interval = null;
 					$("#storeArea").append(a);
+					//if (d[1].slice(-6) == "(loop)") {
+					//	a = a.cloneNode(true);
+					//	a.setAttribute('id', d[1].slice(0,-6) + "." + d[2]);
+					//	$("#storeArea").append(a);
+					//}
 				} else console.log("Browser can't play '" + d[1] + "'");
 			}
 		}
@@ -263,6 +268,8 @@ function k(c, e) {
 
 var audioWaiting = [];
 var fade = 0;// работает от 0.2 сек.
+var audioScope;
+var audioPlaying;
 
 macros['fadetime'] = {
 	handler: function(place, macroName, params, parser) {
@@ -283,93 +290,132 @@ macros['fadetime'] = {
 	}
 }
 
+macros['clearbgmlist'] = {
+	handler: function(place, macroName, params, parser) {
+		audioWaiting = [];
+	}
+}
+
+var playbgm = function (bgm) {
+	if (fade > 0) {
+		fading(bgm, 1);
+		/*if (audioPlaying) {
+			fading(audioPlaying,-1);
+			audioPlaying.removeAttribute("class");
+			audioPlaying.looped = false;
+			audioPlaying.currentTime = 0;
+		}*/
+	} else {
+		this.volume = 1;
+		if (audioPlaying) stopbgm(audioPlaying);
+	}
+	bgm.play();
+	if (!bgm.hasAttribute("class")) bgm.setAttribute("class", "playing");
+	bgm.ontimeupdate = function() {
+		if (fade > 0) {
+			//document.getElementById("demo").innerHTML = audioPlaying.currentTime + ":" + audioPlaying.volume;
+			var e = (this.duration-this.currentTime)*1000-fade;
+			if (e <= 0 && this.hasAttribute("class")) {
+				fading(this, -1);
+				this.afterplay();
+				delete this.ontimeupdate;
+			}
+		}
+	}
+	bgm.onended = function() {
+		this.removeAttribute("class");
+		if (fade == 0) {
+			this.afterplay();
+		}
+	}
+	bgm.afterplay = function() {
+		if (audioWaiting[0]){
+			this.looped = false;
+			playbgm(audioWaiting[0]);
+			audioWaiting.shift();
+		} else if (this.looped){
+			if (this.id.slice(-10,-4) != "(loop)") {
+				var cp = document.getElementById(this.id.slice(0,-4)+"(loop)"+this.id.slice(-4));
+				cp.looped = true;
+				this.looped = false;
+				playbgm(cp);
+			} else {
+				var orig = document.getElementById(this.id.slice(0,-10)+this.id.slice(-4));
+				orig.looped = true;
+				this.looped = false;
+				playbgm(orig);
+			}
+		}
+	}
+}
+
+var pausebgm = function (m) {
+	m.removeAttribute("class");
+	delete m.ontimeupdate;
+	m.looped = false;
+	if (fade > 0) {
+		fading (m, -1);
+		m.ontimeupdate = function () {
+			if (this.volume == 0) {
+				this.pause();
+				delete this.ontimeupdate;
+			}
+		}
+	} else m.pause();
+}
+//var loopbgm = function (m){
+//	m.looped = true;
+//	playbgm(m);
+//}
+
+var stopbgm = function (m) {
+	pausebgm(m);
+	m.currentTime = 0;
+}
+
+var fading = function (m, d) {
+	if (m.interval) clearInterval(m.interval);
+	if (d == 1) {//fadein
+		m.volume = 0;
+	} else if (d == -1) {//fadeout
+		if (!m.currentTime) return;
+	}
+	var v = m.volume;
+	m.interval = setInterval(function () {
+		//v = Math.min(1, Math.max(0, v + 100/fade * d));
+		v = v + 100/fade * d;
+		if (v > 1) v = 1;
+		if (v < 0) v = 0;
+		m.volume = v;
+		if (v == 0 || v == 1) clearInterval(m.interval);
+	}, 100);
+}
+
+var loopclone = function (m) {
+	var idc = m.id.slice(0,-4) + "(loop)" + m.id.slice(-4);
+	if (!document.getElementById(idc)) {
+		var a = m.cloneNode(true);
+		a.setAttribute('id', idc);
+		$("#storeArea").append(a);
+	}
+}
+
+macros['stopallbgm'] = {
+	handler: function(place, macroName, params, parser) {
+		audioWaiting = [];
+		var ap = document.getElementsByClassName("playing");
+		for (i = 0; i<ap.length; i++){
+			stopbgm(ap[i]);
+		}
+	}
+}
+
 macros['playbgm'] = macros['pausebgm'] = macros['stopbgm'] = macros['loopbgm'] = macros['unloopbgm'] = macros['afterplaybgm'] = macros['afterloopbgm'] = {
 	handler: function(place, macroName, params, parser) {
-		var audioScope = document.getElementById(eval(parser.fullArgs()));
-		var audioPlaying = document.getElementsByClassName("playing")[0];
-		var playbgm = function (bgm) {
-			if (fade > 0) {
-				fading(bgm, 1);
-			} else {
-				this.volume = 1;
-			}
-			bgm.play();
-			if (!bgm.hasAttribute("class")) bgm.setAttribute("class", "playing");
-			bgm.ontimeupdate = function() {
-				if (fade > 0) {
-					var e = (this.duration-this.currentTime)*1000-fade*2;
-					if (e <= 0) {
-						fading(this, -1);
-						if (audioWaiting[0]){
-							this.looped = false;
-							playbgm(audioWaiting[0]);
-							audioWaiting.shift();
-						} else if (this.looped){
-							if (this.id.slice(-10,-4) != "(loop)") {
-								var cp = document.getElementById(this.id.slice(0,-4)+"(loop)"+this.id.slice(-4));
-								cp.looped = true;
-								this.looped = false;
-								playbgm(cp);
-							} else {
-								var orig = document.getElementById(this.id.slice(0,-10)+this.id.slice(-4));
-								orig.looped = true;
-								this.looped = false;
-								playbgm(orig);
-							}
-						}
-						delete this.ontimeupdate;
-					}
-				}
-			}
-			bgm.onended = function() {
-				this.removeAttribute("class");
-			}
-		}
-		var pausebgm = function (m){
-			m.removeAttribute("class");
-			m.loop = false;
-			m.pause();
-		}
-		var loopbgm = function (m){
-			m.looped = true;
-			playbgm(m);
-		}
-		var stopbgm = function (m){
-			pausebgm(m);
-			m.removeEventListener('ended', m.afterRemoveClass);
-			m.currentTime = 0;
-		}
-		var fading = function (m, d){
-			if (m.interval) clearInterval(m.interval);
-			if (d == 1) {//fadein
-				m.volume = 0;
-			} else if (d == -1) {//fadeout
-				if (!m.currentTime) return;
-			}
-			var v = m.volume;
-			m.interval = setInterval(function () {
-				v = Math.min(1, Math.max(0, v + 100/fade * d));
-				m.volume = v;
-				if (v == 0 || v == 1) clearInterval(m.interval);
-			}, 100);
-		}
-		var aftercrossfadebgm = function (){
-			var m = audioPlaying;
-			m.ontimeupdate = function(){
-				var e = (m.duration-m.currentTime)*1000-fade*2;
-				if (e <= 0) {
-					fading(m,-1);
-					if (audioWaiting[0]){
-						if (audioWaiting[0].looping) {
-							audioWaiting[0].loop = true;
-							audioWaiting[0].looping = false;
-						}
-						fading(audioWaiting[0],1);
-						audioWaiting.shift();
-					}
-				}
-			}
-		}
+		//document.getElementById("demo").innerHTML = audioWaiting.toString();
+		
+		audioScope = document.getElementById(eval(parser.fullArgs()));
+		audioPlaying = document.getElementsByClassName("playing")[0];
 
 		if (macroName == 'playbgm') {
 			playbgm (audioScope);
@@ -378,21 +424,33 @@ macros['playbgm'] = macros['pausebgm'] = macros['stopbgm'] = macros['loopbgm'] =
 			pausebgm (audioScope);
 		}
 		if (macroName == 'stopbgm') {
-			pausebgm (audioScope);
-			audioScope.currentTime = 0;
+			stopbgm (audioScope);
 		}
 		if (macroName == 'loopbgm') {
-			loopbgm(audioScope);
+			audioScope.looped = true;
+			loopclone(audioScope);
+			playbgm(audioScope);
 		}
 		if (macroName == 'unloopbgm') {
 			audioScope.looped = false;
 		}
 		if (macroName == 'afterplaybgm') {
-			audioWaiting[audioWaiting.length] = audioScope;
+			if (audioPlaying){
+				//audioWaiting[0] = audioScope;
+				audioWaiting[audioWaiting.length] = audioScope;
+			} else {
+				playbgm (audioScope);
+			}
 		}
 		if (macroName == 'afterloopbgm') {
-			audioWaiting[audioWaiting.length] = audioScope;
 			audioScope.looped = true;
+			loopclone(audioScope);
+			if (audioPlaying){
+				//audioWaiting[0] = audioScope;
+				audioWaiting[audioWaiting.length] = audioScope;
+			} else {
+				playbgm (audioScope);
+			}
 		}
 		if (macroName == 'pausebgm') {
 			pausebgm (audioScope);

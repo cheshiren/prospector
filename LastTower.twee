@@ -29,7 +29,7 @@ CSSImports.twee
 CSS.twee
 
 
-:: Music1 [annotation]
+:: MusicRef [annotation]
 Chris Week - Conductor ([[http://chrisweeksmusic.com/album/conductor]])
 Maeror Tri
 Troum
@@ -40,7 +40,7 @@ The Haxan Cloak (?)
 
 
 :: Music [nobr]
-<<fadetime 0.5s>>
+<<fadetime 1s>>
 <<set $musBegin2Ferry = "sound/green0.mp3">>
 <<set $musFerry = "sound/green1.mp3">>
 <<set $musFerry2Beach = "sound/green1-2.mp3">>
@@ -49,7 +49,19 @@ The Haxan Cloak (?)
 <<set $musStairs = "sound/green3.mp3">>
 <<set $musStairs2End = "sound/green4.mp3">>
 
-<<set $musLoop = "sound/green1(loop).mp3"+"sound/green2(loop).mp3"+"sound/green3(loop).mp3">>
+<<set $musBegin2Rust = "sound/jelti0.mp3">>
+<<set $musRust = "sound/jelti1.mp3">>
+<<set $musRust2Black = "sound/jelti0.mp3">>
+<<set $musBlack = "sound/jelti2.mp3">>
+<<set $musTitle = "sound/jelti3.mp3">>
+
+<<set $musBegin2Follow = "sound/red start.mp3">>
+<<set $musFollow = "sound/red sledovanie.mp3">>
+<<set $musFollow2Look = "sound/red perehod.mp3">>
+<<set $musLook = "sound/red oglyadivaetsya.mp3">>
+<<set $musLook2Wall = "sound/red o perehod2.mp3">>
+<<set $musWall = "sound/red na stene.mp3">>
+<<set $musWall2End = "sound/red konets.mp3">>
 
 <<set $musTest = "sound/red oglyadivaetsya.mp3">>
 <<set $musTest1 = "sound/last 1.mp3">>
@@ -82,10 +94,10 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 :: Begin [nobr dream slow]
 <<playbgm $musBegin2Ferry>>
 <<afterloopbgm $musFerry>>
-/%<<loopbgm $musTest>>
-<<afterloopbgm $musTest1>>%/
+
 <<if $Beta>>
 <div class="beta">
+[[Кромка чаши|Ledge]]<br>
 [[Титульный|Title]]<br>
 [[На стене|ClimbWall]]<br>
 [[Сон|Dream]]<br>
@@ -94,6 +106,7 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 <span id="demo"></span>
 </div>
 <<endif>>
+
 @@.firsttext;	...И снова низкое чёрное небо несётся над бурой Пустошью. Остовы разрушенных зданий и ржавая пыль на руках.@@
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
@@ -183,6 +196,7 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 [[— Осмотреться|ExamFerry]]
 </p>
 <<else>>
+<<clearbgmlist>>
 <<afterplaybgm $musFerry2Beach>>
 <<afterloopbgm $musBeach>>
 @@.firsttext;	Ржавая калитка отворяется с громким скрипом, несколько мокрых металлических ступенек ведут прямо в холодную, тихо плещущуюся о борт черноту. Осторожный спуск на белеющую под водой дорожку, и она немного глубже, чем казалось с парома.@@
@@ -221,6 +235,7 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 <br>
 @@.tinsmith;	— ...Когда-то таких башен было много. Все очень высокие. Скульпторы их строили. Жили там, занимались своими скульпторскими делами. Наверх лазали, — Жестянщик зашёлся кашлем и долго не мог остановиться. Прошло несколько минут прежде, чем он смог продолжить. — А потом что-то произошло там, и Башни начали рушиться. Одна за другой. Их обломки разлетались по всей округе и рушили другие Башни, пока не осталась одна, Последняя, окружённая руинами...@@
 <<continue>><div class="anykey"></div><<endcontinue>>
+<<clearbgmlist>>
 <<afterplaybgm $musBeach2Stairs>>
 <<afterloopbgm $musStairs>>
 <br>
@@ -257,7 +272,6 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 /%%/
 @@.firsttext;	Зарево становится всё ярче. Озон вновь чувствуется в воздухе. И появляется шум. Сначала тихий и неразборчивый, но с каждой ступенью всё более громкий. Скрипы и скрежеты, гул ветра и отдалённый, полный злой безысходности, вой.@@
 <<continue>><div class="anykey"></div><<endcontinue>>
-<<afterplaybgm $musStairs2End>>
 <br>
 <br>
 @@.tinsmith;	— ...А что творится в самой Башне вообще никому неизвестно. Поговаривали, что внутри иногда мелькают огни, но кому захочется подходить, выяснять? Ржавый Лес не пропустит...@@
@@ -273,9 +287,13 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 :: Ledge [nobr bowel t-normal normal]
 /%%/
 @@.firsttext;	Крупные чёрные обломки на верхних ступенях отсвечивают металлом. Поверхности арочных опор испещрены глубокими выбоинами. Шаг, другой. Вершина уже близко. Последняя ступень...@@
+<<clearbgmlist>>
+<<afterplaybgm $musStairs2End>>
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
 	Посреди гигантской плоской чаши торчит чёрный шпиль Башни. Её вершина вонзается в пелену низких тёмных туч, вспыхивающих огненными сполохами.
+<<clearbgmlist>>
+<<loopbgm $musRust>>
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
 	Всё дно чаши, от подножия Башни до пологих краёв, устлано тёмным ковром Ржавого Леса — закрученные, острые сучья переплетаются на многометровую высоту, лишая любой возможности пробраться сквозь них.
@@ -312,6 +330,8 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 
 :: Boulder [nobr bowel t-normal normal]
 /%%/
+<<clearbgmlist>>
+<<loopbgm $musBlack>>
 @@.firsttext;	Большой обломок неподалёку от кромки Леса. Огромная чёрная тень, продирающаяся сквозь заросли. Жёлтый луч света, мазнувший по укрытию, и треск наэлектризованного воздуха.@@
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
@@ -327,12 +347,16 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 
 :: Title [nobr title t-slow]
 /%%/
-<center style="padding-top: 25vh;">@@opacity:0;-webkit-animation:textshow 3s;animation:textshow 3s;-webkit-animation-fill-mode:forwards;animation-fill-mode:forwards;animation-delay:2s;-webkit-animation-delay:2s;font-size:60px;font-family:B52;СТАРАТЕЛЬ@@</center>
+<<clearbgmlist>>
+<<playbgm $musTitle>>
+<center style="padding-top: 20vh;">@@opacity:0;-webkit-animation:textshow 3s;animation:textshow 3s;-webkit-animation-fill-mode:forwards;animation-fill-mode:forwards;animation-delay:2s;-webkit-animation-delay:2s;font-size:60px;font-family:B52;СТАРАТЕЛЬ@@</center>
 [[<div class="anykey"></div>|Follow]]
 
 
 :: Follow [nobr forest t-normal normal]
 /%%/
+<<clearbgmlist>>
+<<loopbgm $musFollow>>
 @@.firsttext;	Огромная горбатая тень мерно бредёт впереди, раскачиваясь из стороны в сторону. Скрежет раздираемых зарослей оглушителен.@@
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
@@ -351,6 +375,9 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
 	Исполин топчется на месте, поводя шеей из стороны в сторону, разглядывая что-то впереди, и вдруг начинает поворачиваться, шаря лучом по зарослям.
+	<<fadetime 0.5s>>
+	<<playbgm $musFollow2Look>>
+	<<afterloopbgm $musLook>>
 <p class="links">
 [[— Броситься к нему|Rush]]
 <br>
@@ -387,6 +414,8 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
 	Исполинская рука накрывает сверху, сдавливает, комкает и, подняв высоко над верхушками Ржавого Леса, отшвыривает в холодную, бездонную темноту.
+	<<fadetime 2s>>
+	<<stopallbgm>>
 <p class="links restart">
 [[Ещё раз|Continue]]
 </p>
@@ -411,6 +440,9 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 
 :: Wall [nobr forest t-normal normal]
 /%%/
+<<clearbgmlist>>
+<<playbgm $musLook2Wall>>
+<<afterloopbgm $musWall>>
 @@.firsttext;	Чёрный останавливается ещё трижды. И всякий раз он осматривается всё дольше, а повреждённый им Лес зарастает всё гуще.@@
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
