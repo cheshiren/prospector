@@ -229,6 +229,11 @@ version.extensions["toggletagMacros"]={major:1,minor:1,revision:0};macros["toggl
 
 :: Own Sound [script]
 //requires jQuery
+var beta = document.createElement("DIV");
+beta.id = "beta";
+$("#storeArea").append(beta);
+document.getElementById("storeArea").hidden = false;
+
 var div = document.getElementById("storeArea").firstChild;
 var fe = ["ogg", "mp3", "wav", "webm"];
 while (div) {
@@ -251,7 +256,7 @@ function k(c, e) {
 				}
 				if (i < fe.length) {
 					a.setAttribute("src", d[1] + "." + d[2]);
-					a.setAttribute('id', d[1] + "." + d[2]);
+					a.setAttribute('id', d[1].slice(d[1].lastIndexOf("/")+1) + "." + d[2]);
 					a.interval = null;
 					$("#storeArea").append(a);
 					//if (d[1].slice(-6) == "(loop)") {
@@ -296,29 +301,40 @@ macros['clearbgmlist'] = {
 	}
 }
 
-var playbgm = function (bgm) {
+var playbgm = function (bgm, when) {
 	if (fade > 0) {
 		fading(bgm, 1);
-		/*if (audioPlaying) {
-			fading(audioPlaying,-1);
-			audioPlaying.removeAttribute("class");
-			audioPlaying.looped = false;
-			audioPlaying.currentTime = 0;
-		}*/
 	} else {
 		this.volume = 1;
-		if (audioPlaying) stopbgm(audioPlaying);
+	}
+	if (audioPlaying && when == "now") {
+		audioWaiting = [];
+		var p = document.getElementsByClassName("playing");
+		for (i = 0; i<p.length; i++){
+			//document.getElementById("demo").innerHTML += p[i].id;
+			/*fading(p[i],-1);
+			p[i].looped = false;
+			p[i].currentTime = 0;
+			p[i].removeAttribute("class");*/
+			stopbgm(p[i]);
+		}
 	}
 	bgm.play();
 	if (!bgm.hasAttribute("class")) bgm.setAttribute("class", "playing");
 	bgm.ontimeupdate = function() {
+
+		var bb = document.getElementById("beta");
+		bb.innerHTML = "";
+		for (i=0;i<audioWaiting.length;i++){
+			bb.innerHTML += audioWaiting[i].id;
+		}
+		
 		if (fade > 0) {
 			//document.getElementById("demo").innerHTML = audioPlaying.currentTime + ":" + audioPlaying.volume;
 			var e = (this.duration-this.currentTime)*1000-fade;
-			if (e <= 0 && this.hasAttribute("class")) {
+			if (e <= 0 && this.hasAttribute("class") && this.volume == 1) {
 				fading(this, -1);
 				this.afterplay();
-				delete this.ontimeupdate;
 			}
 		}
 	}
@@ -350,15 +366,19 @@ var playbgm = function (bgm) {
 }
 
 var pausebgm = function (m) {
+	if (m.looped == true) {
+		var n = document.getElementById(m.id.slice(0,-4)+"(loop)"+m.id.slice(-4));
+		if (n) {
+			pausebgm (n);
+		}
+	}
 	m.removeAttribute("class");
-	delete m.ontimeupdate;
 	m.looped = false;
 	if (fade > 0) {
 		fading (m, -1);
 		m.ontimeupdate = function () {
 			if (this.volume == 0) {
 				this.pause();
-				delete this.ontimeupdate;
 			}
 		}
 	} else m.pause();
@@ -369,8 +389,20 @@ var pausebgm = function (m) {
 //}
 
 var stopbgm = function (m) {
+	if (m.looped == true) {
+		var n = document.getElementById(m.id.slice(0,-4)+"(loop)"+m.id.slice(-4));
+	}
 	pausebgm(m);
-	m.currentTime = 0;
+	m.onpause = function(){
+		this.currentTime = 0;
+		this.volume = 1;
+	}
+	if (n) {
+		n.onpause = function(){
+			this.currentTime = 0;
+			this.volume = 1;
+		}
+	}
 }
 
 var fading = function (m, d) {
@@ -413,12 +445,12 @@ macros['stopallbgm'] = {
 macros['playbgm'] = macros['pausebgm'] = macros['stopbgm'] = macros['loopbgm'] = macros['unloopbgm'] = macros['afterplaybgm'] = macros['afterloopbgm'] = {
 	handler: function(place, macroName, params, parser) {
 		//document.getElementById("demo").innerHTML = audioWaiting.toString();
-		
-		audioScope = document.getElementById(eval(parser.fullArgs()));
+		var s = eval(parser.fullArgs())
+		audioScope = document.getElementById(s.slice(s.lastIndexOf("/")+1));
 		audioPlaying = document.getElementsByClassName("playing")[0];
 
 		if (macroName == 'playbgm') {
-			playbgm (audioScope);
+			playbgm (audioScope, "now");
 		}
 		if (macroName == 'pausebgm') {
 			pausebgm (audioScope);
@@ -429,7 +461,7 @@ macros['playbgm'] = macros['pausebgm'] = macros['stopbgm'] = macros['loopbgm'] =
 		if (macroName == 'loopbgm') {
 			audioScope.looped = true;
 			loopclone(audioScope);
-			playbgm(audioScope);
+			playbgm(audioScope, "now");
 		}
 		if (macroName == 'unloopbgm') {
 			audioScope.looped = false;
@@ -437,6 +469,9 @@ macros['playbgm'] = macros['pausebgm'] = macros['stopbgm'] = macros['loopbgm'] =
 		if (macroName == 'afterplaybgm') {
 			if (audioPlaying){
 				//audioWaiting[0] = audioScope;
+				audioPlaying.looped = false;
+				var n = document.getElementById(audioPlaying.id.slice(0,-4)+"(loop)"+audioPlaying.id.slice(-4));
+				if (n) n.looped = false;
 				audioWaiting[audioWaiting.length] = audioScope;
 			} else {
 				playbgm (audioScope);
@@ -447,13 +482,13 @@ macros['playbgm'] = macros['pausebgm'] = macros['stopbgm'] = macros['loopbgm'] =
 			loopclone(audioScope);
 			if (audioPlaying){
 				//audioWaiting[0] = audioScope;
+				audioPlaying.looped = false;
+				var n = document.getElementById(audioPlaying.id.slice(0,-4)+"(loop)"+audioPlaying.id.slice(-4));
+				if (n) n.looped = false;
 				audioWaiting[audioWaiting.length] = audioScope;
 			} else {
 				playbgm (audioScope);
 			}
-		}
-		if (macroName == 'pausebgm') {
-			pausebgm (audioScope);
 		}
 	}
 };

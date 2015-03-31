@@ -41,21 +41,18 @@ The Haxan Cloak (?)
 
 :: Music [nobr]
 <<fadetime 1s>>
-<<set $musBegin2Ferry = "sound/green0.mp3">>
-<<set $musFerry = "sound/green1.mp3">>
-<<set $musFerry2Beach = "sound/green1-2.mp3">>
-<<set $musBeach = "sound/green2.mp3">>
-<<set $musBeach2Stairs = "sound/green2-3.mp3">>
-<<set $musStairs = "sound/green3.mp3">>
-<<set $musStairs2End = "sound/green4.mp3">>
+<<set $musBegin2Ferry = "https://dl.dropboxusercontent.com/s/fijts8mzuiz4vlf/green0.mp3">>
+<<set $musFerry = "https://dl.dropboxusercontent.com/s/jqvi5fzvbjlalqb/green1.mp3">>
+<<set $musFerry2Beach = "https://dl.dropboxusercontent.com/s/pxgrclftf19vq9t/green1-2.mp3">>
+<<set $musBeach = "https://dl.dropboxusercontent.com/s/kyec2t7818ah9j8/green2.mp3">>
+<<set $musBeach2Stairs = "https://dl.dropboxusercontent.com/s/frjdimte52khdqq/green2-3.mp0">>
+<<set $musStairs = "https://dl.dropboxusercontent.com/s/b4fmgzuexwwnrr7/green3.mp3">>
+<<set $musStairs2End = "https://dl.dropboxusercontent.com/s/ikvtnawn1f2vb4y/green4.mp3">>
 
-<<set $musBegin2Rust = "sound/jelti0.mp3">>
 <<set $musRust = "sound/jelti1.mp3">>
-<<set $musRust2Black = "sound/jelti0.mp3">>
 <<set $musBlack = "sound/jelti2.mp3">>
 <<set $musTitle = "sound/jelti3.mp3">>
 
-<<set $musBegin2Follow = "sound/red start.mp3">>
 <<set $musFollow = "sound/red sledovanie.mp3">>
 <<set $musFollow2Look = "sound/red perehod.mp3">>
 <<set $musLook = "sound/red oglyadivaetsya.mp3">>
@@ -63,9 +60,15 @@ The Haxan Cloak (?)
 <<set $musWall = "sound/red na stene.mp3">>
 <<set $musWall2End = "sound/red konets.mp3">>
 
-<<set $musTest = "sound/red oglyadivaetsya.mp3">>
-<<set $musTest1 = "sound/last 1.mp3">>
+<<set $musDreamStart = "sound/son start.mp3">>
+<<set $musDream = "sound/son.mp3">>
+<<set $musDreamEnd = "sound/son end.mp3">>
 
+<<set $musBegin2Hump = "sound/last start.mp3">>
+<<set $musHump = "sound/last 1.mp3">>
+<<set $musHump2Jammer = "sound/last 1-2.mp3">>
+<<set $musJammer = "sound/last 2.mp3">>
+<<set $musJammer2End = "sound/last end.mp3">>
 
 
 /%
@@ -77,10 +80,12 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 
 :: Start [nobr]
 <<Music>>
-<center style="padding-top: 15vh;">Отображать меню бета-режима?
+/%<center style="padding-top: 15vh;">Отображать меню бета-режима?
 <br>(не рекомендуется при первой игре)
 <br>[[Нет|Post-Start][$Beta = 0]] | [[Да|Post-Start][$Beta = 1]]
-</center>
+</center>%/
+<<set $Beta = 1>>
+<<goto "Begin">>
 
 
 
@@ -101,7 +106,7 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 [[Титульный|Title]]<br>
 [[На стене|ClimbWall]]<br>
 [[Сон|Dream]]<br>
-[[Пробуждение|JumpOnBlack]]<br>
+[[Пробуждение|Screetch]]<br>
 [[Включение джаммера|TurnJammerOn]]<br>
 <span id="demo"></span>
 </div>
@@ -292,7 +297,6 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
 	Посреди гигантской плоской чаши торчит чёрный шпиль Башни. Её вершина вонзается в пелену низких тёмных туч, вспыхивающих огненными сполохами.
-<<clearbgmlist>>
 <<loopbgm $musRust>>
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
@@ -330,7 +334,6 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 
 :: Boulder [nobr bowel t-normal normal]
 /%%/
-<<clearbgmlist>>
 <<loopbgm $musBlack>>
 @@.firsttext;	Большой обломок неподалёку от кромки Леса. Огромная чёрная тень, продирающаяся сквозь заросли. Жёлтый луч света, мазнувший по укрытию, и треск наэлектризованного воздуха.@@
 <<continue>><div class="anykey"></div><<endcontinue>>
@@ -347,7 +350,6 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 
 :: Title [nobr title t-slow]
 /%%/
-<<clearbgmlist>>
 <<playbgm $musTitle>>
 <center style="padding-top: 20vh;">@@opacity:0;-webkit-animation:textshow 3s;animation:textshow 3s;-webkit-animation-fill-mode:forwards;animation-fill-mode:forwards;animation-delay:2s;-webkit-animation-delay:2s;font-size:60px;font-family:B52;СТАРАТЕЛЬ@@</center>
 [[<div class="anykey"></div>|Follow]]
@@ -355,7 +357,6 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 
 :: Follow [nobr forest t-normal normal]
 /%%/
-<<clearbgmlist>>
 <<loopbgm $musFollow>>
 @@.firsttext;	Огромная горбатая тень мерно бредёт впереди, раскачиваясь из стороны в сторону. Скрежет раздираемых зарослей оглушителен.@@
 <<continue>><div class="anykey"></div><<endcontinue>>
@@ -375,7 +376,7 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
 	Исполин топчется на месте, поводя шеей из стороны в сторону, разглядывая что-то впереди, и вдруг начинает поворачиваться, шаря лучом по зарослям.
-	<<fadetime 0.5s>>
+	<<fadetime 1s>>
 	<<playbgm $musFollow2Look>>
 	<<afterloopbgm $musLook>>
 <p class="links">
@@ -414,7 +415,7 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
 	Исполинская рука накрывает сверху, сдавливает, комкает и, подняв высоко над верхушками Ржавого Леса, отшвыривает в холодную, бездонную темноту.
-	<<fadetime 2s>>
+	<<fadetime 3s>>
 	<<stopallbgm>>
 <p class="links restart">
 [[Ещё раз|Continue]]
@@ -440,7 +441,6 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 
 :: Wall [nobr forest t-normal normal]
 /%%/
-<<clearbgmlist>>
 <<playbgm $musLook2Wall>>
 <<afterloopbgm $musWall>>
 @@.firsttext;	Чёрный останавливается ещё трижды. И всякий раз он осматривается всё дольше, а повреждённый им Лес зарастает всё гуще.@@
@@ -551,6 +551,7 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 
 :: Wait [nobr stone t-normal normal]
 /%%/
+<<afterplaybgm $musWall2End>>
 @@.firsttext;	Гладкий камень стены и беззвучно мечущееся небо, вой ветра, слабый запах ржавчины, бредущий Чёрный, непоколебимая громадина Башни.@@
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
@@ -561,8 +562,12 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 :: Dream [nobr stone t-slow slow dreamSeq]
 /%%/
 <div class="dreamback"></div>
+<<fadetime 3s>>
+<<playbgm $musDreamStart>>
+<<afterloopbgm $musDream>>
 @@.firsttext;	Опять слышится плеск тёмной воды о борт парома.@@
 <<continue>><div class="anykey"></div><<endcontinue>>
+<<fadetime 1s>>
 <br>
 	Серые хлопья пепла, засыпающие бетонное строение без единого окна. Из трещин в его стенах доносится многоголосый плач.
 <<continue>><div class="anykey"></div><<endcontinue>>
@@ -605,6 +610,7 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 /%%/
 @@.firsttext .tinsmith;	— Но самое главное, я, в отличие от тебя, знаю своего создателя. И я творение его рук, прекрасное, гармоничное. А ты убил меня, — безжизненная гончая, дрожа, поднимается.@@
 <<continue>><div class="anykey"></div><<endcontinue>>
+<<afterplaybgm $musDreamEnd>>
 <br>
 @@.tinsmith;	— Уничтожил меня, надругался надо мной, — раскачиваясь из стороны в сторону, она делает шаг, другой. — Ты. Ты и подобные тебе, вы только разрушаете, портите, извращаете!@@
 <<continue>><div class="anykey"></div><<endcontinue>>
@@ -621,6 +627,8 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 
 :: Screetch [nobr stone t-fast fast]
 /%%/
+<<playbgm $musBegin2Hump>>
+<<afterloopbgm $musHump>>
 @@.firsttext;	Звук раздираемых зарослей выдёргивает из сна. Чёрный!@@
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
@@ -748,6 +756,10 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 
 :: ConnectCablesToJammer [nobr black t-fast fast]
 /%%/
+<<if visited("ConnectCablesToSockets") and $leftAntennaPlaced and $rightAntennaPlaced>>
+<<playbgm $musHump2Jammer>>
+<<afterloopbgm $musJammer>>
+<<endif>>
 	Связка кабелей снимается с пояса и разматывается. Два конца сбрасываются вниз, к сбегающим в темноту скобам лестницы. Два других вставляются в разъёмы на джаммере — керамика скрипит о керамику — и поворачиваются до щелчка.
 <<HumpLinks>>
 
@@ -788,6 +800,7 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
 	Постоянно оглядываясь — жёлтый луч опаляет оставленные позади заросли — Чёрный продирается по направлению к кромке Ржавого Леса и всё дальше от Башни. Нужно его разворачивать.
+	<<afterplaybgm $musJammer2End>>
 [[<div class="anykey"></div>|ToBeContinued]]
 /%
 
@@ -820,6 +833,11 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 
 :: LeftShoulder [nobr black t-fast fast]
 /%%/
+<<if $isShoulderRestart>>
+<<fadetime 1s>>
+<<loopbgm $musHump>>
+<<set $isShoulderRestart = 0>>
+<<endif>>
 <<LeftShoulderPre>>
 <<if $alarm>>
 <<ShoulderAlarm>>
@@ -866,6 +884,10 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 <<if $alarm>>
 <<ShoulderAlarm>>
 <<elseif $rightAntennaPlaced>>
+<<if visited("ConnectCablesToJammer") and visited("ConnectCablesToSockets")>>
+<<playbgm $musHump2Jammer>>
+<<afterloopbgm $musJammer>><<endi
+f>>
 	Вторая антенна вытягивается из-за спины и прижимается к титану кожуха. Опять вспышка пиропатрона и запах горелой резины. Обе антенны установлены.
 <<set $leftAntennaPlaced = 1>>
 <<LeftShoulderLinks>>
@@ -913,6 +935,11 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 %/
 :: RightShoulderPre [nobr black t-fast fast]
 /%%/
+<<if $isShoulderRestart>>
+<<fadetime 1s>>
+<<loopbgm $musHump>>
+<<set $isShoulderRestart = 0>>
+<<endif>>
 <<if not $ex>>
 <<if (not $seenLeftShoulder) and (not $seenRightShoulder)>>
 	Крючья цепляются за торчащие конструкции, кабеля, прорехи в покрытии. Чёрный всё мечется, пытаясь отыскать нарушителя.
@@ -990,6 +1017,10 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 <<ShoulderAlarm>>
 <<else>>
 <<if $leftAntennaPlaced>>
+<<if visited("ConnectCablesToJammer") and visited("ConnectCablesToSockets")>>
+<<playbgm $musHump2Jammer>>
+<<afterloopbgm $musJammer>><<endi
+f>>
 	Вторая антенна вытягивается из-за спины и прижимается к титану кожуха. Опять вспышка пиропатрона и запах горелой резины. Обе антенны установлены.
 <<set $rightAntennaPlaced = 1>>
 <<RightShoulderLinks>>
@@ -1036,11 +1067,13 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
 	И вдруг в конус жёлтого света ныряют пальцы второй руки. Вой оглушает, в нём слышатся отзвуки надрывного отчаяния, боли, мести. Керамические пальцы хватают, с ненавистью сдавливают и под клокочущие завывания отшвыривают в холодную, бездонную темноту.
+	<<fadetime 3s>>
+	<<stopallbgm>>
 <p class="links restart">
 <<if passage() == "RightShoulder" or passage() == "PlaceRightAntenna">>
-[[Ещё раз|RightShoulder][$ex = 1]]
+[[Ещё раз|RightShoulder][$ex = 1; $isShoulderRestart = 1]]
 <<elseif passage() == "LeftShoulder" or passage() == "PlaceLeftAntenna">>
-[[Ещё раз|LeftShoulder][$ex = 1]]
+[[Ещё раз|LeftShoulder][$ex = 1; $isShoulderRestart = 1]]
 <<endif>>
 </p>
 <<elseif passage() == "PlaceRightAntenna" or passage() == "PlaceLeftAntenna">>
@@ -1051,11 +1084,13 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
 	И в ту же секунду в конус жёлтого света ныряют пальцы другой руки. Вой оглушает, в нём слышатся отзвуки надрывного отчаяния, боли, мести. Керамические пальцы хватают, с ненавистью сдавливают и под клокочущие завывания отшвыривают в холодную, бездонную темноту.
+	<<fadetime 3s>>
+	<<stopallbgm>>
 <p class="links restart">
 <<if passage() == "RightShoulder" or passage() == "PlaceRightAntenna">>
-[[Ещё раз|RightShoulder][$ex = 1]]
+[[Ещё раз|RightShoulder][$ex = 1; $isShoulderRestart = 1]]
 <<elseif passage() == "LeftShoulder" or passage() == "PlaceLeftAntenna">>
-[[Ещё раз|LeftShoulder][$ex = 1]]
+[[Ещё раз|LeftShoulder][$ex = 1; $isShoulderRestart = 1]]
 <<endif>>
 </p>
 <<endif>>
@@ -1162,6 +1197,10 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 
 :: ConnectCablesToSockets [nobr panel t-fast fast]
 /%%/
+<<if visited("ConnectCablesToJammer") and $leftAntennaPlaced and $rightAntennaPlaced>>
+<<playbgm $musHump2Jammer>>
+<<afterloopbgm $musJammer>>
+<<endif>>
 	Коннекторы входят в разъёмы и вкручиваются до хруста древних пломб. Кабели извиваться от хлынувшего по ним проводника, обдают жаром.
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
