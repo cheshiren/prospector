@@ -45,30 +45,29 @@ The Haxan Cloak (?)
 <<set $musFerry = "https://dl.dropboxusercontent.com/s/jqvi5fzvbjlalqb/green1.mp3">>
 <<set $musFerry2Beach = "https://dl.dropboxusercontent.com/s/pxgrclftf19vq9t/green1-2.mp3">>
 <<set $musBeach = "https://dl.dropboxusercontent.com/s/kyec2t7818ah9j8/green2.mp3">>
-<<set $musBeach2Stairs = "https://dl.dropboxusercontent.com/s/frjdimte52khdqq/green2-3.mp0">>
 <<set $musStairs = "https://dl.dropboxusercontent.com/s/b4fmgzuexwwnrr7/green3.mp3">>
 <<set $musStairs2End = "https://dl.dropboxusercontent.com/s/ikvtnawn1f2vb4y/green4.mp3">>
 
-<<set $musRust = "sound/jelti1.mp3">>
-<<set $musBlack = "sound/jelti2.mp3">>
-<<set $musTitle = "sound/jelti3.mp3">>
+<<set $musRust = "https://dl.dropboxusercontent.com/s/3lj3kckfospku2d/jelti1.mp3">>
+<<set $musBlack = "https://dl.dropboxusercontent.com/s/xnfqf51malspvr9/jelti2.mp3">>
+<<set $musTitle = "https://dl.dropboxusercontent.com/s/oubh7p8z9qrwag1/jelti3.mp3">>
 
-<<set $musFollow = "sound/red sledovanie.mp3">>
-<<set $musFollow2Look = "sound/red perehod.mp3">>
-<<set $musLook = "sound/red oglyadivaetsya.mp3">>
-<<set $musLook2Wall = "sound/red o perehod2.mp3">>
-<<set $musWall = "sound/red na stene.mp3">>
-<<set $musWall2End = "sound/red konets.mp3">>
+<<set $musFollow = "https://dl.dropboxusercontent.com/s/uznc3buzwnab2ip/red%20sledovanie.mp3">>
+<<set $musFollow2Look = "https://dl.dropboxusercontent.com/s/hl5jvx9825ryjk8/red%20perehod.mp3">>
+<<set $musLook = "https://dl.dropboxusercontent.com/s/0mexwl9qb8mytx5/red%20oglyadivaetsya.mp3">>
+<<set $musLook2Wall = "https://dl.dropboxusercontent.com/s/p3px9okj32vd7ru/red%20o%20perehod2.mp3">>
+<<set $musWall = "https://dl.dropboxusercontent.com/s/xuz3rjb456y5z5h/red%20na%20stene.mp3">>
+<<set $musWall2End = "https://dl.dropboxusercontent.com/s/n0f1ef2k72geez7/red%20konets.mp3">>
 
-<<set $musDreamStart = "sound/son start.mp3">>
-<<set $musDream = "sound/son.mp3">>
-<<set $musDreamEnd = "sound/son end.mp3">>
+<<set $musDreamStart = "https://dl.dropboxusercontent.com/s/yqa0f0z7kii02m7/son%20start.mp3">>
+<<set $musDream = "https://dl.dropboxusercontent.com/s/r4l23anv6kv800h/son.mp3">>
+<<set $musDreamEnd = "https://dl.dropboxusercontent.com/s/ttmdyx5291oq2ny/son%20end.mp3">>
 
-<<set $musBegin2Hump = "sound/last start.mp3">>
-<<set $musHump = "sound/last 1.mp3">>
-<<set $musHump2Jammer = "sound/last 1-2.mp3">>
-<<set $musJammer = "sound/last 2.mp3">>
-<<set $musJammer2End = "sound/last end.mp3">>
+<<set $musBegin2Hump = "https://dl.dropboxusercontent.com/s/isqsqky5hds5hbw/last%20start.mp3">>
+<<set $musHump = "https://dl.dropboxusercontent.com/s/frewb9peuoaco7i/last%201.mp3">>
+<<set $musHump2Jammer = "https://dl.dropboxusercontent.com/s/0kis67gdw5epnv8/last%201-2.mp3">>
+<<set $musJammer = "https://dl.dropboxusercontent.com/s/foxuyh0evz0c14r/last%202.mp3">>
+<<set $musJammer2End = "https://dl.dropboxusercontent.com/s/putygttuf6m72vr/last%20end.mp3">>
 
 
 /%
@@ -80,12 +79,12 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 
 :: Start [nobr]
 <<Music>>
-/%<center style="padding-top: 15vh;">Отображать меню бета-режима?
+<center style="padding-top: 15vh;">Отображать меню бета-режима?
 <br>(не рекомендуется при первой игре)
 <br>[[Нет|Post-Start][$Beta = 0]] | [[Да|Post-Start][$Beta = 1]]
-</center>%/
-<<set $Beta = 1>>
-<<goto "Begin">>
+</center>
+/%<<set $Beta = 1>>
+<<goto "Begin">>%/
 
 
 
@@ -241,7 +240,6 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 @@.tinsmith;	— ...Когда-то таких башен было много. Все очень высокие. Скульпторы их строили. Жили там, занимались своими скульпторскими делами. Наверх лазали, — Жестянщик зашёлся кашлем и долго не мог остановиться. Прошло несколько минут прежде, чем он смог продолжить. — А потом что-то произошло там, и Башни начали рушиться. Одна за другой. Их обломки разлетались по всей округе и рушили другие Башни, пока не осталась одна, Последняя, окружённая руинами...@@
 <<continue>><div class="anykey"></div><<endcontinue>>
 <<clearbgmlist>>
-<<afterplaybgm $musBeach2Stairs>>
 <<afterloopbgm $musStairs>>
 <br>
 <br>
@@ -756,10 +754,6 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 
 :: ConnectCablesToJammer [nobr black t-fast fast]
 /%%/
-<<if visited("ConnectCablesToSockets") and $leftAntennaPlaced and $rightAntennaPlaced>>
-<<playbgm $musHump2Jammer>>
-<<afterloopbgm $musJammer>>
-<<endif>>
 	Связка кабелей снимается с пояса и разматывается. Два конца сбрасываются вниз, к сбегающим в темноту скобам лестницы. Два других вставляются в разъёмы на джаммере — керамика скрипит о керамику — и поворачиваются до щелчка.
 <<HumpLinks>>
 
@@ -884,10 +878,6 @@ http://patorjk.com/software/taag/#p=display&f=Banner
 <<if $alarm>>
 <<ShoulderAlarm>>
 <<elseif $rightAntennaPlaced>>
-<<if visited("ConnectCablesToJammer") and visited("ConnectCablesToSockets")>>
-<<playbgm $musHump2Jammer>>
-<<afterloopbgm $musJammer>><<endi
-f>>
 	Вторая антенна вытягивается из-за спины и прижимается к титану кожуха. Опять вспышка пиропатрона и запах горелой резины. Обе антенны установлены.
 <<set $leftAntennaPlaced = 1>>
 <<LeftShoulderLinks>>
@@ -904,6 +894,8 @@ f>>
 :: BreakLeftJoint [nobr black t-fast fast]
 /%%/
 <<if $rightJointBroken>>
+<<playbgm $musHump2Jammer>>
+<<afterloopbgm $musJammer>>
 	Процедура повторяется: писк лезвия, разрезающего сухожилия, треск лопающихся мышечных волокон, брызги застывающего проводника. Ещё пара точечных ударов и вскинутая было рука исполина срывается вниз, обрушивается в заросли Леса и повисает на неработающем суставе.
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
@@ -1017,10 +1009,6 @@ f>>
 <<ShoulderAlarm>>
 <<else>>
 <<if $leftAntennaPlaced>>
-<<if visited("ConnectCablesToJammer") and visited("ConnectCablesToSockets")>>
-<<playbgm $musHump2Jammer>>
-<<afterloopbgm $musJammer>><<endi
-f>>
 	Вторая антенна вытягивается из-за спины и прижимается к титану кожуха. Опять вспышка пиропатрона и запах горелой резины. Обе антенны установлены.
 <<set $rightAntennaPlaced = 1>>
 <<RightShoulderLinks>>
@@ -1038,6 +1026,8 @@ f>>
 :: BreakRightJoint [nobr black t-fast fast]
 /%%/
 <<if $leftJointBroken>>
+<<playbgm $musHump2Jammer>>
+<<afterloopbgm $musJammer>>
 	Процедура повторяется: писк лезвия, разрезающего сухожилия, треск лопающихся мышечных волокон. Пара точечных ударов и безвольная правая рука исполина обрушивается вниз, собственным весом вырывает сустав и оторванная падает в густые заросли Леса.
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>
@@ -1197,10 +1187,6 @@ f>>
 
 :: ConnectCablesToSockets [nobr panel t-fast fast]
 /%%/
-<<if visited("ConnectCablesToJammer") and $leftAntennaPlaced and $rightAntennaPlaced>>
-<<playbgm $musHump2Jammer>>
-<<afterloopbgm $musJammer>>
-<<endif>>
 	Коннекторы входят в разъёмы и вкручиваются до хруста древних пломб. Кабели извиваться от хлынувшего по ним проводника, обдают жаром.
 <<continue>><div class="anykey"></div><<endcontinue>>
 <br>

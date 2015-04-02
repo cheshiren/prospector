@@ -231,7 +231,7 @@ version.extensions["toggletagMacros"]={major:1,minor:1,revision:0};macros["toggl
 //requires jQuery
 var beta = document.createElement("DIV");
 beta.id = "beta";
-$("#storeArea").append(beta);
+$("#title").append(beta);
 document.getElementById("storeArea").hidden = false;
 
 var div = document.getElementById("storeArea").firstChild;
@@ -324,9 +324,9 @@ var playbgm = function (bgm, when) {
 	bgm.ontimeupdate = function() {
 
 		var bb = document.getElementById("beta");
-		bb.innerHTML = "";
+		bb.innerHTML = this.id+"("+audioWaiting.length+") ";
 		for (i=0;i<audioWaiting.length;i++){
-			bb.innerHTML += audioWaiting[i].id;
+			bb.innerHTML += audioWaiting[i].id+"| ";
 		}
 		
 		if (fade > 0) {
